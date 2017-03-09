@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+   <children>
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+         <children>
+            <ListView fx:id="appListView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </VBox.margin>
+            </ListView>
+            <Button id="addAppButton" fx:id="addAppButton" alignment="CENTER" mnemonicParsing="false" onAction="#addButtonClicked" text="Add" textAlignment="CENTER" />
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </VBox>
+      <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+         <children>
+            <Label fx:id="statusLabel" text="Please select an app from the list">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </VBox.margin>
+            </Label>
+            <ChoiceBox id="localeChoiceBox" fx:id="localeChoice" prefWidth="150.0">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </VBox.margin>
+            </ChoiceBox>
+            <TextField id="localeTextField" fx:id="localeTextField" promptText="Locale">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </VBox.margin>
+            </TextField>
+            <Button id="changeButton" fx:id="changeButton" mnemonicParsing="false" text="Change">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </VBox.margin>
+            </Button>
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </VBox>
+   </children>
+</HBox>
