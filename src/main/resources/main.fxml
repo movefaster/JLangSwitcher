@@ -27,21 +27,45 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin>
             </Label>
-            <ChoiceBox id="localeChoiceBox" fx:id="localeChoice" prefWidth="150.0">
-               <VBox.margin>
+            <HBox alignment="CENTER_LEFT">
+               <children>
+                  <Label text="System Locales:">
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                  </Label>
+                  <ChoiceBox id="localeChoiceBox" fx:id="localeChoice" HBox.hgrow="ALWAYS">
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </ChoiceBox>
+               </children>
+               <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </VBox.margin>
-            </ChoiceBox>
-            <TextField id="localeTextField" fx:id="localeTextField" promptText="Locale">
+               </padding>
+            </HBox>
+            <TextField id="localeTextField" fx:id="localeTextField" promptText="Other Locale">
                <VBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin>
             </TextField>
-            <Button id="changeButton" fx:id="changeButton" mnemonicParsing="false" text="Change">
-               <VBox.margin>
+            <HBox alignment="CENTER">
+               <children>
+                  <Button id="changeButton" fx:id="changeButton" mnemonicParsing="false" onAction="#changeButtonClicked" text="Change">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="resetButton" mnemonicParsing="false" onAction="#resetButtonClicked" text="Reset">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+               <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </VBox.margin>
-            </Button>
+               </padding>
+            </HBox>
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
