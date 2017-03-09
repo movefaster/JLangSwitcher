@@ -4,6 +4,7 @@ import com.dd.plist.NSObject;
 import com.dd.plist.PropertyListParser;
 import com.google.common.base.CharMatcher;
 import com.google.common.io.Files;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -100,7 +101,9 @@ public class Controller implements Initializable {
         File appsDir = new File("/Applications");
         for (File f : appsDir.listFiles(f -> new ExtensionPredicate("app").test(f))) {
             App app = new App(f);
-            if (!apps.contains(app)) apps.add(app);
+            Platform.runLater(() -> {
+                if (!apps.contains(app)) apps.add(app);
+            });
         }
     }
 
@@ -200,12 +203,14 @@ public class Controller implements Initializable {
                 if (empty || app == null) {
                     setText(null);
                     setGraphic(null);
+                    setTooltip(null);
                 } else {
                     setText(app.name);
                     ImageView view = new ImageView(app.icon);
                     view.setFitHeight(20);
                     view.setFitWidth(20);
                     setGraphic(view);
+                    setTooltip(new Tooltip(app.id));
                 }
             }
         }
@@ -245,25 +250,46 @@ public class Controller implements Initializable {
         /**
          * Loads the icon of the app from its {@code Contents/Resources/} directory. If the icon is in {@code icns}
          * format, then execute the shell command<br>
-         *     {@code sips -s format png <IN-FILE> --out <OUT-FILE>}<br>
+         *     {@code sips -s format png IN-FILE --out OUT-FILE}<br>
          * to convert it to PNG first.
          * @param app a {@code File} object pointing to the app
          * @return a {@code File} object pointing to the resulting PNG file
          */
         private File loadIconFile(File app) {
             File resources = new File(app, "Contents/Resources/");
-            Optional<File> fileOptional =  Stream.of(resources.listFiles())
-                    .filter(new ExtensionPredicate("icns")).findFirst();
-            if (fileOptional.isPresent()) {
-                File iconFile = fileOptional.get();
+            File infoPlist = new File(app, "Contents/info.plist");
+            try {
+                String iconFilename = loadIconFilename(infoPlist);
+                File iconFile = null;
+                // Attempt to read from info.plist to determine icon
+                if (iconFilename == null) {
+                    // if it fails pick the first icon from the app's Contents/Resources/ directory
+                    iconFile = Stream.of(resources.listFiles(f -> new ExtensionPredicate("icns").test(f)))
+                            .findFirst().get();
+                } else {
+                    iconFile = new File(resources, iconFilename);
+                }
                 File pngFile = new File(convertedIconDir,
                         FilenameUtils.getBaseName(app.getName()) + ".png");
                 if (!pngFile.exists()) {
                     Shell.execAndWait(Shell.sipsCommandBuilder(iconFile, pngFile));
                 }
                 return pngFile;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             return null;
+        }
+
+        private String loadIconFilename(File infoPlist) throws Exception {
+            NSDictionary rootDict = (NSDictionary) PropertyListParser.parse(infoPlist);
+            NSObject object = rootDict.objectForKey("CFBundleIconFile");
+            if (object == null) return null;
+            String filename = object.toString();
+            if (FilenameUtils.getExtension(filename).length() == 0) {
+                filename += ".icns";
+            }
+            return filename;
         }
     }
 
