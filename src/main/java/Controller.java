@@ -142,14 +142,19 @@ public class Controller implements Initializable {
     public void resetButtonClicked(ActionEvent event) {
         if (validateAppSelected()) {
             App selectedApp = appListView.getSelectionModel().getSelectedItem();
-            boolean confirm = AlertBox.displayYesNo("Warning",
-                    "Are you sure you want to remove language setting for "
-                            + selectedApp.name + "?");
-            if (confirm) {
-                Shell.execAndWait(Shell.defaultsDeleteCommandBuilder(selectedApp.id));
-                AlertBox.display("Success", "Successfully removed language preference for "
-                            + selectedApp.name);
-            }
+            new AlertBuilder(Alert.AlertType.CONFIRMATION)
+                    .setTitle("Warning")
+                    .setMessage("Are you sure you want to remove language setting for "
+                            + selectedApp.name + "?")
+                    .setPositive("Yes", r -> {
+                        Shell.execAndWait(Shell.defaultsDeleteCommandBuilder(selectedApp.id));
+                        new AlertBuilder(Alert.AlertType.INFORMATION)
+                                .setTitle("Success")
+                                .setMessage("Successfully removed language preference for "
+                                        + selectedApp.name)
+                                .setPositive("OK", null)
+                                .showAndWait();
+                    }).showAndWait();
         }
     }
 
@@ -159,15 +164,21 @@ public class Controller implements Initializable {
             App selectedApp = appListView.getSelectionModel().getSelectedItem();
             String selectedLocale = getSelectedLocale();
             Shell.execAndWait(Shell.defaultsWriteCommandBuilder(selectedApp.id, selectedLocale));
-            AlertBox.display("Success", "Successfully change language of app "
-                    + selectedApp.name + " to " + selectedLocale
-                    + "\nYou might need to restart the app for the change to take effect.");
+            new AlertBuilder(Alert.AlertType.INFORMATION)
+                    .setTitle("Success")
+                    .setMessage("Successfully change language of app "
+                            + selectedApp.name + " to " + selectedLocale
+                            + "\nYou might need to restart the app for the change to take effect.")
+                    .showAndWait();
         }
     }
 
     private boolean validateAppSelected() {
         if (appListView.getSelectionModel().getSelectedIndex() == -1) {
-            AlertBox.display("Error", "You must select an app from the list.");
+            new AlertBuilder(Alert.AlertType.ERROR)
+                    .setTitle("Error")
+                    .setMessage("You must select an app from the list.")
+                    .showAndWait();
             return false;
         }
         return true;
@@ -175,7 +186,10 @@ public class Controller implements Initializable {
 
     private boolean validateLocaleSelected() {
         if (localeChoice.getSelectionModel().getSelectedIndex() == -1 && localeTextField.getText().length() == 0) {
-            AlertBox.display("Error", "You must select a locale from the dropdown or manually enter a locale.");
+            new AlertBuilder(Alert.AlertType.ERROR)
+                    .setTitle("Error")
+                    .setMessage("You must select a locale from the dropdown or manually enter a locale.")
+                    .showAndWait();
             return false;
         }
         return true;
@@ -264,8 +278,12 @@ public class Controller implements Initializable {
                 // Attempt to read from info.plist to determine icon
                 if (iconFilename == null) {
                     // if it fails pick the first icon from the app's Contents/Resources/ directory
-                    iconFile = Stream.of(resources.listFiles(f -> new ExtensionPredicate("icns").test(f)))
-                            .findFirst().get();
+                    try {
+                        iconFile = Stream.of(resources.listFiles(f -> new ExtensionPredicate("icns").test(f)))
+                                .findFirst().get();
+                    } catch (NoSuchElementException e) {
+                        // we can't find the icon that's fine
+                    }
                 } else {
                     iconFile = new File(resources, iconFilename);
                 }

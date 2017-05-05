@@ -29,6 +29,11 @@
             <artifactId>dd-plist</artifactId>
             <version>1.19</version>
         </dependency>
+        <dependency>
+            <groupId>com.aquafx-project</groupId>
+            <artifactId>aquafx</artifactId>
+            <version>RELEASE</version>
+        </dependency>
     </dependencies>
 
     <build>

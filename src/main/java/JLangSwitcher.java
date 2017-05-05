@@ -2,6 +2,7 @@
  * Created by Morton on 3/8/17.
  */
 
+import com.aquafx_project.AquaFx;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
